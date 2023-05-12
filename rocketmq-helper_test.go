@@ -25,7 +25,7 @@ var (
 
 func TestNewRocketHelper(t *testing.T) {
 	rlog.SetLogLevel("error")
-	helper = NewRocketHelper(&RocketMQHelperOptions{
+	helper = NewRocketMQHelper(&RocketMQHelperOptions{
 		NameServers: []string{RMQ_SERVER},
 		AccessKey:   ACCESS_KEY,
 		SecretKey:   SECRET_KEY,
