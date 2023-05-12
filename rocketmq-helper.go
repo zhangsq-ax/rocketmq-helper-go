@@ -55,8 +55,8 @@ type RocketMQHelper struct {
 	producer rocketmq.Producer
 }
 
-// NewRocketHelper to create new RocketMQHelper instance
-func NewRocketHelper(opts *RocketMQHelperOptions) *RocketMQHelper {
+// NewRocketMQHelper to create new RocketMQHelper instance
+func NewRocketMQHelper(opts *RocketMQHelperOptions) *RocketMQHelper {
 	return &RocketMQHelper{
 		opts: opts,
 	}
