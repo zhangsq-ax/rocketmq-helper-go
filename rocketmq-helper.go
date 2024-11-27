@@ -26,14 +26,16 @@ type ConsumeFromOptions struct {
 }
 
 type ConsumerOptions struct {
-	Group        string                // consumer group name
-	ConsumeModel consumer.MessageModel // consume message model
-	ConsumeFrom  *ConsumeFromOptions   // where to start consume messages
+	ConsumeBatchMaxSize int                   // 数值越大，消费效率越高，资源消耗越大
+	Group               string                // consumer group name
+	ConsumeModel        consumer.MessageModel // consume message model
+	ConsumeFrom         *ConsumeFromOptions   // where to start consume messages
 }
 
 type ProducerOptions struct {
-	Group       string // producer group name
-	TraceConfig *primitive.TraceConfig
+	SendMsgTimeout time.Duration // 数值越小，生效效率越高，资源消耗越大
+	Group          string        // producer group name
+	TraceConfig    *primitive.TraceConfig
 }
 
 type MessageEntity struct {
@@ -75,6 +77,9 @@ func (h *RocketMQHelper) CreateConsumer(opts *ConsumerOptions) (rocketmq.PushCon
 		consumer.WithNameServer(globalOpts.NameServers),
 		consumer.WithGroupName(opts.Group),
 		consumer.WithConsumerModel(opts.ConsumeModel),
+	}
+	if opts.ConsumeBatchMaxSize > 0 {
+		consumerOpts = append(consumerOpts, consumer.WithConsumeMessageBatchMaxSize(opts.ConsumeBatchMaxSize))
 	}
 	if globalOpts.Namespace != "" {
 		consumerOpts = append(consumerOpts, consumer.WithNamespace(globalOpts.Namespace))
@@ -138,6 +143,10 @@ func (h *RocketMQHelper) CreateProducer(opts *ProducerOptions) (rocketmq.Produce
 		producer.WithNameServer(globalOpts.NameServers),
 		producer.WithGroupName(opts.Group),
 	}
+	if opts.SendMsgTimeout != 0 {
+		producerOpts = append(producerOpts, producer.WithSendMsgTimeout(opts.SendMsgTimeout))
+	}
+
 	if globalOpts.Namespace != "" {
 		producerOpts = append(producerOpts, producer.WithNamespace(globalOpts.Namespace))
 	}
